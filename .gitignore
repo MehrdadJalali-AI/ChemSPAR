@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.DS_Store
+results/
+manuscript/
+figures/fig1_build/*.png
+figures/fig1_build/*.json
+figures/fig1_build/3Dmol-min.js
+*.pt
+*.parquet

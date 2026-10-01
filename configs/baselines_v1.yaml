@@ -1,0 +1,43 @@
+# Graph views for the fixed 5,000-MOF cohort (resubmission/data/cohort_5000_v1.csv). Frozen via configs/FROZEN.json.
+version: baselines-v1.3   # v1.3: BHS weights = published equal weighting (alpha = beta = gamma = 1/3); v1.2: periodic edge instances
+method: "ChemSPAR-v2"            # gravity-based edge ordering + explicit, auditable chemistry gate (configs/chemistry_v1.yaml, chemistry-v1.2)
+cohort: data/cohort_5000_v1.csv
+base_graph: {construction: periodic_edge_instances, cutoff_angstrom: 4.5}
+pruning_unit: "periodic edge instance (i, j, lattice image); canonical key (i<j, img) or (i, i, img > 0); self-image contacts included"
+representation:
+  all_views: "exactly the retained instance set of the named view; each instance -> two directed edges; no neighbour list is rebuilt at tensor time"
+  graphsage: "edge_index over the view's directed instance edges; no edge features"
+  cgcnn: "edge_index over the view's directed instance edges + Gaussian-expanded instance distances (0-8 A, 0.2 A)"
+  node_features: "atomic number (embedding) + 7-way chemistry-v1.2 element role; identical across views"
+  source_of_truth: "src/chemspar_v2/views.py (compute_structure / view_instances); stored in results/phase2i/views"
+bhs_node_score:
+  source: "Jalali et al., J. Chem. Inf. Model. 65(20):10885-10902 (2025), doi:10.1021/acs.jcim.5c01518, Eq. 1 and Section 2.3: equal weights in all main experiments (alpha = beta = gamma = 0.33)"
+  weights: {degree: 0.3333333333333333, betweenness: 0.3333333333333333, neighbourhood_influence: 0.3333333333333333}
+  note: "This baseline follows the published BHS definition (equal weights) and maps normalised values to nodes by node key."
+pair_level_record: "results/phase2 (minimum-image pair graph) is retained as a structural record only; not used for training"
+
+constructions:                   # alternative graph constructions (no pruning, no gate)
+  Original-4.5:   {rule: "all periodic instances with d <= 4.5 A"}
+  Cutoff-3.5:     {rule: "instances with d <= 3.5 A"}
+  Cutoff-3.0:     {rule: "instances with d <= 3.0 A"}
+  CrystalNN:      {rule: "exactly the instances (pair + image) listed by CrystalNN, incl. self-image"}
+  kNN-12:         {rule: "each atom's 12 nearest periodic instances (own images included), union", k: 12, r_max_angstrom: 8.0}
+
+pruning:                         # all on Original-4.5; static ordering; target floor(tau*|E|)
+  tau_primary: 0.2
+  tau_sweep: [0.5, 0.6, 0.7, 0.8, 0.9]
+  policies:                      # all on the 4.5 A instance graph (src/chemspar_v2/views.py POLICIES)
+    ChemSPAR-v2:            {order: "ascending g", gate: corrected, sweep: true, trained: [0.2, 0.5]}
+    ChemSPAR-v2-HBProtect:  {order: "ascending g", gate: corrected, extra_protected: [hydrogen_bond_candidate], sweep: true, trained: false, role: "structural sensitivity (D9)"}
+    ChemSPAR-v2-noGate:     {order: "ascending g", gate: connectivity_only, sweep: true, trained: false, role: "structural gate ablation"}
+    Random-Chem:            {order: "random (per-structure SHA-256 seed)", gate: corrected, sweep: true, trained: [0.2, 0.5]}
+    Random:                 {order: "random (per-structure SHA-256 seed)", gate: connectivity_only, sweep: false, trained: [0.2]}
+    Distance-Chem:          {order: "longest first", gate: corrected, sweep: true, trained: [0.2, 0.5]}
+    Distance:               {order: "longest first", gate: connectivity_only, sweep: false, trained: [0.2]}
+    BHS-edge-min:           {order: "ascending min(gamma_i, gamma_j); our adaptation", gate: corrected, sweep: true, trained: [0.2, 0.5]}
+    BHS-edge-prod:          {order: "ascending gamma_i * gamma_j; our adaptation", gate: corrected, sweep: true, trained: false}
+    ChemSPAR-v2-massfree:   {order: "ascending 1/d_hyb^2", gate: corrected, sweep: "to 0.5", trained: "pending decision (gravity ablation)"}
+    ChemSPAR-v2-chemmass:   {order: "gravity, chemical mass part only", gate: corrected, sweep: "to 0.5", trained: false}
+    ChemSPAR-v2-topomass:   {order: "gravity, topological mass part only", gate: corrected, sweep: "to 0.5", trained: false}
+  pair_level_structural_only: [ChemSPAR-3term, ChemSPAR-3term-noG, ChemSPAR-legacy-score, ChemSPAR-legacy]
+  random_seed: 42

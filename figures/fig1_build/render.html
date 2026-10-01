@@ -1,0 +1,42 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Figure 1 renders</title>
+<script src="3Dmol-min.js"></script>
+<style>body{margin:0;background:#fff;font-family:sans-serif} .v{width:1400px;height:1400px;position:relative;display:inline-block}</style>
+</head><body>
+<div id="sc" class="v"></div><div id="loc" class="v"></div>
+<div id="Gravity" class="v"></div><div id="Distance" class="v"></div><div id="Random" class="v"></div><div id="BHS-derived" class="v"></div>
+<script>
+const COL={Cd:"#6a4c93",S:"#e3b23c",N:"#3f72af",C:"#4d5359",H:"#f2f2f2",O:"#c8553d"};
+const RAD={Cd:0.62,S:0.48,N:0.36,C:0.34,H:0.22,O:0.36};
+const PROT="#3b3f45", KEEP="#c3c8cf", RM="#d1495b";
+function v3(a){return {x:a[0],y:a[1],z:a[2]}}
+function base(id){const v=$3Dmol.createViewer(id,{backgroundColor:"white",antialias:true});
+  v.setViewStyle({style:"outline",color:"#222222",width:0.02}); return v;}
+function atoms(v,list,scale){list.forEach(a=>v.addSphere({center:v3(a.xyz),radius:RAD[a.el]*scale,color:COL[a.el]||"#7a7a7a"}));}
+function save(v,name){const u=v.pngURI(); return fetch("/save?name="+(new URLSearchParams(location.search).get("pfx")||"")+name,{method:"POST",body:u});}
+const Q=new URLSearchParams(location.search); const DATA=Q.get("data")||"fig1_data.json"; const PFX=Q.get("pfx")||"";
+fetch(DATA).then(r=>r.json()).then(async D=>{
+  // (a) supercell with protected bonds and cell outline
+  const s=base("sc"); const A=D.supercell.atoms;
+  D.supercell.bonds.forEach(b=>s.addCylinder({start:v3(A[b[0]].xyz),end:v3(A[b[1]].xyz),radius:0.11,color:"#8d939b",fromCap:1,toCap:1}));
+  atoms(s,A.filter(a=>!a.edge),0.75); atoms(s,A.filter(a=>a.edge),0.5);
+  const C=D.supercell.cell, o=[0,0,0], add=(p,q)=>p.map((x,i)=>x+q[i]);
+  const P=[o,C[0],C[1],C[2],add(C[0],C[1]),add(C[0],C[2]),add(C[1],C[2]),add(add(C[0],C[1]),C[2])];
+  [[0,1],[0,2],[0,3],[1,4],[1,5],[2,4],[2,6],[3,5],[3,6],[4,7],[5,7],[6,7]].forEach(e=>s.addLine({start:v3(P[e[0]]),end:v3(P[e[1]]),color:"#9a9a9a",dashed:true}));
+  s.zoomTo(); s.rotate(12,"x"); s.rotate(-15,"y"); s.zoom(1.05); s.render();
+  // (b) local environment, protected vs removable
+  const N=D.local.nodes;
+  function local(id,pol){const v=base(id);
+    D.local.contacts.forEach(c=>{const p={start:v3(N[c.a].xyz),end:v3(N[c.b].xyz)};
+      if(c.prot) v.addCylinder({...p,radius:0.10,color:PROT,fromCap:1,toCap:1});
+      else if(pol && c["rm_"+pol]) v.addCylinder({...p,radius:0.032,color:RM});
+      else v.addCylinder({...p,radius:0.018,color:KEEP});});
+    atoms(v,N,0.62);
+    v.zoomTo(); v.rotate(12,"x"); v.rotate(-15,"y"); v.zoom(1.1); v.render(); return v;}
+  const L=local("loc",null);
+  const VS={}; ["Gravity","Distance","Random","BHS-derived"].forEach(p=>VS[p]=local(p,p));
+  await new Promise(r=>setTimeout(r,800));
+  await save(s,"a_supercell"); await save(L,"b_local");
+  for(const p in VS){await save(VS[p],"c_"+p);}
+  document.title="DONE";
+});
+</script></body></html>

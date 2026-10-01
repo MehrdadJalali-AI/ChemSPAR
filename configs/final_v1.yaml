@@ -1,0 +1,87 @@
+# FINAL MATRIX (Phase 4). Fixed BEFORE any final fit; frozen via configs/FROZEN.json. Supersedes the Phase 3 §5/§7
+# matrix and primary family (author decision 2026-09-30: option 1, reframe around the chemistry protection gate).
+version: final-v1.1   # v1.1 (author, 2026-09-30, before any final fit): focused matrix, CGCNN only, 5 seeds
+date: 2026-09-30
+amendment_v1_1: >
+  Author decision to limit compute: CGCNN only, at most 5 paired seeds (1-5), 8 views (views.trained). tau = 0.5 only,
+  where the gate is active for Random/BHS and the pilot differences were largest. Not trained (structural results only):
+  all tau = 0.2 pruned views, Gravity/Distance without gate, Cutoff-3.0, CrystalNN, kNN-12. GraphSAGE dropped. The D15
+  extension is dropped. Consequences to disclose: minimum attainable exact two-sided Wilcoxon p = 0.0625 with 5 pairs
+  (Wilcoxon cannot reach significance; the paired t-test is the only inferential test), and wider CIs for the D14 rule.
+framing: >
+  ChemSPAR is an auditable, chemistry-constrained sparsification framework: a prespecified protection gate
+  (chemistry-v1.2 taxonomy + non-H degree check + connectivity) under which any edge-ordering policy can be run.
+  Gravity, distance, random and the BHS-derived adaptation are alternative ordering policies tested under the same gate,
+  each with a matched ungated partner. The study asks which policy offers the best trade-off between protected-contact
+  retention, local structural completeness, accuracy and cost. Gravity is NOT the headline and no superiority of gravity
+  is claimed.
+must_report: >
+  Distance-Chem preserves local neighbour shells more completely, whereas gravity preferentially removes light-atom
+  (hydrogen) contacts (results/diagnostics_cs_vs_dc/DIAGNOSTIC_REPORT.md; recomputed for all views in results/final/structural).
+
+# display name (paper) <- internal key (code, parquet columns, tensor masks; unchanged for hash continuity)
+display_names:
+  Gravity-Chem: ChemSPAR-v2
+  Gravity: ChemSPAR-v2-noGate
+  Distance-Chem: Distance-Chem
+  Distance: Distance
+  Random-Chem: Random-Chem
+  Random: Random
+  BHS-Chem: BHS-edge-min
+  BHS: BHS-edge-min-noGate
+ungated_means: "no chemical protection check; the non-hydrogen degree check and the connectivity check are kept (gate mode connectivity_only in periodic._check; same as the '-noGate' structural ablation)"
+
+views:
+  trained: [Original-4.5, Cutoff-3.5, ChemSPAR-v2@0.5, Distance-Chem@0.5, Random-Chem@0.5, Random@0.5, BHS-edge-min@0.5, BHS-edge-min-noGate@0.5]
+  constructions: [Original-4.5, Cutoff-3.5, Cutoff-3.0, CrystalNN, kNN-12]
+  orders: [ChemSPAR-v2, Distance-Chem, Random-Chem, BHS-edge-min]          # gated (internal keys)
+  ungated_partner: {ChemSPAR-v2: ChemSPAR-v2-noGate, Distance-Chem: Distance, Random-Chem: Random, BHS-edge-min: BHS-edge-min-noGate}
+  taus: [0.5]              # v1.1 (v1.0: [0.2, 0.5])
+  n_trained_views: 8         # v1.1 (v1.0: 21)
+  identical_views:           # ungated view == gated partner in ALL 5,000 structures (results/final/structural/gated_vs_ungated_identity.csv)
+    Distance@0.2: Distance-Chem@0.2
+  identical_view_rule: >
+    A view identical to another in all 5,000 structures has bitwise-identical tensors, so with deterministic training
+    (verified in preflight) its fits equal the partner's. It is not re-trained; its per-seed metrics are copied from the
+    partner, and its F1 comparison is reported as 'identical views; difference 0 by construction' and excluded from the
+    Holm family. Near-identical pairs (Gravity vs Gravity-Chem: 6 structures at tau 0.2, 233 at tau 0.5) ARE trained.
+  not_trained: "ChemSPAR-v2-massfree (D13 superseded: gravity is no longer the claim, so a gravity-component ablation is not needed; kept as a structural record), HBProtect (D9), BHS-edge-prod, chem/topo-mass variants, pair-level record"
+
+backbones:
+  cgcnn:     {role: primary,   seeds: [1, 2, 3, 4, 5], epochs: "from results/final/budget_extension/budget_decision.json (E_final)"}
+  graphsage: {role: "dropped in v1.1 (not run)", seeds: [], epochs: 50}
+conditional_extension_v1_0_dropped_in_v1_1: >
+  D15 as adapted: CGCNN seeds 11-20 (all 21 views, to keep pairing) are run only if at least one family-F3 95% CI is
+  unresolved after 10 seeds (neither entirely inside [-0.02, +0.02] eV nor entirely outside it). If triggered, both the
+  10-seed and 20-seed results are reported and the extension is disclosed as conditional (two-stage).
+fixed_across_views: [cohort_5000_v1 and its split, node features, initial weights per seed, mini-batch order per seed, epochs (no early stopping; best-validation checkpoint), hyperparameters, CPU, torch threads]
+hyperparameters: {optimizer: Adam, lr: 0.001, batch_size: 32, weight_decay: 0.0, dropout: 0.0, loss: MSE on standardised target}
+execution: {device: cpu, torch_threads_per_fit: 3, parallel_workers: 3, note: "every fit uses 3 threads (bitwise determinism verified at this setting before launch); wall times from the matrix are NOT cost endpoints"}
+
+statistics:
+  unit: "seed (paired); d_s = MAE(A, s) - MAE(B, s); pairwise-complete seeds only; no imputation"
+  per_comparison: [mean +- SD of both arms, mean paired difference with two-sided t 95% CI, Cohen d_z, paired t-test (primary), exact two-sided Wilcoxon (robustness)]
+  primary_endpoint: "CGCNN test MAE (eV), PBE bandgap"
+  families:   # Holm correction WITHIN each family, separately for t and Wilcoxon p-values
+    F1_gate_effect: "X-gated minus X-ungated for X in {Gravity, Distance, Random, BHS} at tau 0.2 and 0.5 (8 comparisons)"
+    F2_ordering_under_gate: "all 6 pairwise differences among the 4 gated orders, at tau 0.2 and 0.5 (12 comparisons)"
+    F3_vs_full_graph: "each gated view minus Original-4.5 (8 comparisons); equivalence per D14: claim only if the 95% CI lies entirely within [-0.02, +0.02] eV"
+  descriptive_only: "ungated views vs Original-4.5; constructions vs Original-4.5 (paired CIs, no multiplicity claim)"
+  secondary: "GraphSAGE MAE with the same families (Holm within family, labelled secondary); RMSE, R2, Spearman, Kendall, top-k recall and overlap (k = 50, 100) labelled exploratory"
+  wording: >
+    'better/worse' only if the Holm-adjusted t-test p < 0.05 and the CI excludes 0; otherwise 'not distinguishable'.
+    'equivalent' only under the D14 CI rule. No claim that gravity is superior unless F2 supports it; even then the
+    claim is limited to that comparison, backbone and tau.
+
+trade_off:   # pre-specified; no composite score and no weights
+  axes:
+    protected_retention: "% of protected instances retained (chemistry-v1.2, tol 0.40 A; tol 0.25/0.55 reported)"
+    shell_completeness: "% of atoms whose instances with d <= 3.0 A are all retained (2.5 and 3.5 A reported)"
+    accuracy: "CGCNN mean test MAE over seeds"
+    cost: "isolated-process benchmark (below): training seconds per epoch and end-to-end preprocessing time"
+  rule: "per tau, report the Pareto non-dominated set over the four axes among the 8 pruned views (constructions shown for reference). A single 'best' policy is named only if it dominates all others; otherwise the non-dominated set and the specific trade-off are reported."
+cost_benchmark: >
+  Run after the matrix, with nothing else running: per view, 3 repeats in isolated processes, 8 torch threads; stages =
+  graph construction, CrystalNN, ordering scores, pruning, tensorisation (all 5,000 structures), 5 training epochs
+  (seconds/epoch) and test inference, CGCNN and GraphSAGE; peak RSS per process. Full-budget training time is the
+  measured seconds/epoch x E and is labelled as such.

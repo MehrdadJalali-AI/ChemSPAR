@@ -1,0 +1,68 @@
+# Versioned chemistry definition for the corrected ChemSPAR pipeline (chemspar_v2).
+# Any change to this file must bump `version` and be recorded in resubmission/REVISION_TRACKER.md.
+version: chemistry-v1.2   # v1.2 (2026-09-29): score simplified to gravity only (D11/D12); taxonomy unchanged from v1.1 (D6-D8)
+method: ChemSPAR-v2       # gravity-based edge ordering + explicit, auditable chemistry protection gate
+date: 2026-09-29
+pymatgen_version_validated: "2024.2.20"
+
+metals:
+  definition: "pymatgen.core.Element(symbol).is_metal"
+  # Explicit exceptions (author decision D2, 2026-09-29). Metalloids forced to non-metal
+  # regardless of what the installed pymatgen version returns.
+  forced_nonmetals: [B, Si, Ge, As, Sb, Te]
+  forced_metals: []
+
+graph:
+  construction: minimum_image_cutoff   # one undirected edge per atom pair i<j; self-images excluded
+  cutoff_angstrom: 4.5
+
+bonding:
+  radius_table: "pymatgen.analysis.molecule_structure_comparator.CovalentRadius.radius (Cordero et al., Dalton Trans. 2008, doi:10.1039/b801115j)"
+  radius_tolerance_angstrom: 0.40      # radius-bonded iff d_min_image <= r_i + r_j + tolerance
+  crystalnn: "pymatgen.analysis.local_env.CrystalNN() with default parameters; a pair is a CrystalNN pair if either site lists the other (any periodic image) as a neighbour"
+
+protection:
+  # Mutually exclusive edge taxonomy (first matching class wins, in this order).
+  # Decisions: D3 (metal-X), D6 (metal-metal), D7 (non-metal), D8 (hydrogen-bond candidates).
+  taxonomy:
+    - {class: covalent_radius,         pair: nonmetal-nonmetal, rule: "radius_bonded",                                  protected: true}
+    - {class: metal_ligand,            pair: metal-nonmetal,    rule: "crystalnn OR radius_bonded",                     protected: true}
+    - {class: metal_metal_crystalnn,   pair: metal-metal,       rule: "crystalnn (radius route NOT used)",              protected: true}
+    - {class: hydrogen_bond_candidate, pair: nonmetal-nonmetal, rule: "crystalnn AND NOT radius_bonded AND H + acceptor", protected: false}
+    - {class: crystalnn_nonmetal,      pair: nonmetal-nonmetal, rule: "crystalnn AND NOT radius_bonded (other)",        protected: false}
+    - {class: metal_contact,           pair: "metal-*",         rule: "any other metal-involving pair",                 protected: false}
+    - {class: other_contact,           pair: nonmetal-nonmetal, rule: "everything else",                                protected: false}
+  hydrogen_bond_acceptors: [N, O, F, Cl, Br, I]
+  routes: [none, crystalnn, radius, both]   # which lens(es) supported the edge (recorded for every edge)
+  sensitivity_tolerances_angstrom: [0.25, 0.40, 0.55]   # +/-0.15 A around the primary tolerance
+  variants:
+    ChemSPAR-HBProtect: {extra_protected_classes: [hydrogen_bond_candidate]}
+
+score:
+  # ChemSPAR-v2 primary score (D12): S_ij = g_ij = m_i m_j / max(d_hyb_ij, 1e-6)^2 ; ascending S = removed first.
+  # Edge betweenness and the additive chemistry prior were removed: they changed 0.16% of removed edges at tau = 0.2
+  # and 0.06% at tau = 0.5 (0 protected-edge differences) on the fixed 5,000-MOF cohort
+  # (results/phase2/p2b_simplified_equality.csv). The chemistry gate is the operative chemical component.
+  primary: gravity
+  node_mass_weights: {degree: 0.45, betweenness: 0.55, closeness: 0.20, neighbour_distance: 0.40, z: 0.60, role: 0.90}
+  role_weights: {metal: 1.0, oxygen: 0.8, nitrogen: 0.8, carbon: 0.6, halide: 0.4, other: 0.3, hydrogen: 0.2}
+  hybrid_lambda: 0.8
+  # Exploratory only (structural ablation 'ChemSPAR-3term' in the SI; never trained):
+  exploratory_three_term:
+    formula: "S3 = 1.0 g + 0.5 B + 1.2 C"
+    edge_weights: {gravity: 1.0, betweenness: 0.5, chemistry: 1.2}
+    chemistry_prior:
+      covalent_radius: 1.0
+      metal_ligand: 1.0
+      metal_metal_crystalnn: 1.0
+      hydrogen_bond_candidate: 0.4
+      crystalnn_nonmetal: 0.4
+      metal_contact: 0.2
+      other_contact: 0.2
+
+gate:
+  order: [protected, degree_non_hydrogen, connectivity]
+  degree_rule: "reject if a non-hydrogen endpoint would reach degree 0 (i.e. current degree <= 1)"
+
+random_policy:
+  seeding: "numpy default_rng(seed=hash('<global seed>:<qmof_id>')) per structure; independent of cohort order"

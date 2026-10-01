@@ -1,0 +1,264 @@
+{
+  "chemistry_canonical_sha256": "aff5f3c73b43754ab014154e336149c762fb6d8cd52b205addf89d3e47432e5d",
+  "chemistry_version": "chemistry-v1.2",
+  "files_sha256": {
+    "configs/baselines_v1.yaml": "808fa26413a531580b42944c5fcc0bc50fe4824badf59edb2ac57de026e947f0",
+    "configs/chemistry_v1.yaml": "c9751209a35659b84b5b15e6591447cf2982edc40e69a6dd7f364a2e31d6b917",
+    "configs/final_v1.yaml": "4115848406e7e2d9803e2330d01202170a279858f305fd619765c8d7043d68fc",
+    "data/cohort_5000_v1.csv": "5124085709a546525a036920a1e1d5ff65f0f91647f61fd6854419428277f0cd"
+  },
+  "gate_order": [
+    "protected",
+    "degree_non_hydrogen",
+    "connectivity"
+  ],
+  "hydrogen_bond_acceptors": [
+    "N",
+    "O",
+    "F",
+    "Cl",
+    "Br",
+    "I"
+  ],
+  "metals": {
+    "definition": "pymatgen.core.Element(symbol).is_metal",
+    "forced_metals": [],
+    "forced_nonmetals": [
+      "B",
+      "Si",
+      "Ge",
+      "As",
+      "Sb",
+      "Te"
+    ]
+  },
+  "method": "ChemSPAR-v2",
+  "method_framing": "ChemSPAR: auditable, chemistry-constrained sparsification framework; gravity (internal key ChemSPAR-v2), distance, random and BHS-derived orders are alternative ordering policies under the same protection gate, each with an ungated partner (configs/final_v1.yaml; author decision 2026-09-30).",
+  "method_framing_superseded": "ChemSPAR-v2 combines gravity-based edge ordering with explicit, auditable chemistry constraints. (Phase 3; superseded 2026-09-30)",
+  "optional_files_sha256": {
+    "results/final/budget_extension/budget_decision.json": "508e99b205c1acbd01170ac32dbe6a2635d7674fc075f68d35f6015170398cd5"
+  },
+  "pruning_unit": "periodic edge instance (i, j, lattice image); canonical key (i<j, img) or (i, i, img > 0); self-image contacts included",
+  "qmof_source": {
+    "cif_directory": "relaxed_structures_full_v1 (20,372 CIFs; per-file SHA-256 in relaxed_structures_full_v1.sha256.json)",
+    "database": "QMOF Database (local copy; no git commit available in ../QMOF)",
+    "files_sha256": {
+      "qmof.csv": "9991b2d51d71a6cc4c97affd8ca36ac18d5b75554b4f3f1ac9ebb35bc9995f26",
+      "qmof.json": "0f88f45e8e4f8dd684ff295419f08c4bc9923a445abfa4c42352fdb82b55c453",
+      "relaxed_structures.zip": "c7b18fbb042900a91fc481405dabda81196f88eff004c3a092ecaff393521211",
+      "relaxed_structures_full_v1.sha256.json": "bb80694e3f3558539c6058cae941c73fc60f2fd02d1efb131e6bd2367ec80fa1"
+    },
+    "readme_stated_sources": [
+      "QMOF Database - PBE: https://dx.doi.org/10.17172/NOMAD/2021.10.10-1 (as stated in QMOF README; not independently verified)"
+    ]
+  },
+  "radius_tolerance_angstrom": 0.4,
+  "representation": {
+    "all_views": "exactly the retained instance set of the named view; each instance -> two directed edges; no neighbour list is rebuilt at tensor time",
+    "cgcnn": "edge_index over the view's directed instance edges + Gaussian-expanded instance distances (0-8 A, 0.2 A)",
+    "graphsage": "edge_index over the view's directed instance edges; no edge features",
+    "node_features": "atomic number (embedding) + 7-way chemistry-v1.2 element role; identical across views",
+    "source_of_truth": "src/chemspar_v2/views.py (compute_structure / view_instances); stored in results/phase2i/views"
+  },
+  "score": {
+    "formula": "S_ij = g_ij = m_i m_j / max(d_hyb_ij, 1e-6)^2 (ascending = removed first)",
+    "hybrid_lambda": 0.8,
+    "node_mass_weights": {
+      "betweenness": 0.55,
+      "closeness": 0.2,
+      "degree": 0.45,
+      "neighbour_distance": 0.4,
+      "role": 0.9,
+      "z": 0.6
+    },
+    "primary": "gravity",
+    "role_weights": {
+      "carbon": 0.6,
+      "halide": 0.4,
+      "hydrogen": 0.2,
+      "metal": 1.0,
+      "nitrogen": 0.8,
+      "other": 0.3,
+      "oxygen": 0.8
+    }
+  },
+  "software": {
+    "PyYAML": "6.0.2",
+    "ase": "3.25.0",
+    "networkx": "3.2.1",
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "pyarrow": "19.0.1",
+    "pymatgen": "2024.2.20",
+    "python": "3.9.6",
+    "scikit-learn": "1.6.1",
+    "scipy": "1.13.1",
+    "torch": "2.4.0",
+    "torch_geometric": "2.6.1"
+  },
+  "taxonomy": [
+    {
+      "class": "covalent_radius",
+      "pair": "nonmetal-nonmetal",
+      "protected": true,
+      "rule": "radius_bonded"
+    },
+    {
+      "class": "metal_ligand",
+      "pair": "metal-nonmetal",
+      "protected": true,
+      "rule": "crystalnn OR radius_bonded"
+    },
+    {
+      "class": "metal_metal_crystalnn",
+      "pair": "metal-metal",
+      "protected": true,
+      "rule": "crystalnn (radius route NOT used)"
+    },
+    {
+      "class": "hydrogen_bond_candidate",
+      "pair": "nonmetal-nonmetal",
+      "protected": false,
+      "rule": "crystalnn AND NOT radius_bonded AND H + acceptor"
+    },
+    {
+      "class": "crystalnn_nonmetal",
+      "pair": "nonmetal-nonmetal",
+      "protected": false,
+      "rule": "crystalnn AND NOT radius_bonded (other)"
+    },
+    {
+      "class": "metal_contact",
+      "pair": "metal-*",
+      "protected": false,
+      "rule": "any other metal-involving pair"
+    },
+    {
+      "class": "other_contact",
+      "pair": "nonmetal-nonmetal",
+      "protected": false,
+      "rule": "everything else"
+    }
+  ],
+  "tensor_proof": {
+    "base_sha256": "9000650d9ef1318e7201b878fb5f060e6218d0554ce5115bf445a5b225bac0ac",
+    "identical_views": {
+      "Distance@0.2": "Distance-Chem@0.2"
+    },
+    "manifest_sha256": "41d7be6e2778ac790e75f8e13c073b2a0974a5f73accdec2763047f499675e67",
+    "masks_sha256": "88f11cdde030a5ac60f54858f838f98293f75c2d95db83ae42661433e5caf2ef",
+    "views": {
+      "BHS-edge-min-noGate@0.2": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "BHS-edge-min-noGate@0.5": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "BHS-edge-min@0.2": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "BHS-edge-min@0.5": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "ChemSPAR-v2-massfree@0.2": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "ChemSPAR-v2-noGate@0.2": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "ChemSPAR-v2-noGate@0.5": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "ChemSPAR-v2@0.2": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "ChemSPAR-v2@0.5": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "CrystalNN": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "Cutoff-3.0": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "Cutoff-3.5": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "Distance-Chem@0.2": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "Distance-Chem@0.5": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "Distance@0.2": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "Distance@0.5": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "Original-4.5": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "Random-Chem@0.2": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "Random-Chem@0.5": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "Random@0.2": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "Random@0.5": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      },
+      "kNN-12": {
+        "proof1_all_structures_tensor_equals_stored_view": true,
+        "proof2_all_pass": true,
+        "proof2_independent_recompute_checked": 100
+      }
+    }
+  }
+}

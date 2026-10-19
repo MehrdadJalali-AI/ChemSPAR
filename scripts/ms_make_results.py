@@ -37,7 +37,7 @@ def bname(b):
 
 
 def pfmt(p):
-    return "<0.001" if p < 0.001 else f"{p:.3f}"
+    return "$<$0.001" if p < 0.001 else f"{p:.3f}"
 
 
 def main():
@@ -110,7 +110,7 @@ def main():
     m["PrepHoursDC"] = f"{C.loc['Distance-Chem@0.5'].prep_hours_5000_extrapolated:.2f}"
     m["CostDiffRCDC"] = f"{C.loc['Distance-Chem@0.5'].cgcnn_train_seconds_per_epoch - C.loc['Random-Chem@0.5'].cgcnn_train_seconds_per_epoch:.2f}"
     m["DescCut"], m["LDescCut"], m["HDescCut"] = [f"{x:+.4f}" for x in pd.read_csv(A / "cgcnn_seeds1-5_descriptive.csv").set_index("A").loc["Cutoff-3.5", ["mean_diff", "ci_low", "ci_high"]]]
-    (T / "results_macros.tex").write_text("".join(f"\\newcommand{{\\{k}}}{{{v}}}\n" for k, v in m.items()))
+    (T / "results_macros.tex").write_text("".join(f"\\newcommand{{\\{k}}}{{{v.replace('$<$', '<')}}}\n" for k, v in m.items()))  # text macros are used inside math
     fig2(D, F, C)
 
 
@@ -157,8 +157,14 @@ def fig2(D, F, C):
         if k < len(fam) - 1:
             b.axhline(min(ys) - 0.5, color="#bbbbbb", lw=0.5)
     b.set_ylim(-0.7, len(rows) - 0.3)
-    b.text(0.995, 0.02, "green: A has lower MAE · red: A higher · grey: not distinguishable (Holm-adjusted)\nshaded: ±0.02 eV equivalence margin", transform=b.transAxes, fontsize=5.8, color="#555555", ha="right", va="bottom")
-    b.set_xlabel("Paired ΔMAE, A − B (eV), mean and 95% CI"); b.set_title("Pre-registered comparisons (Holm)", fontsize=7)
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    b.legend(handles=[Line2D([], [], color="#2a9d8f", marker="o", ms=3, lw=1.2, label="A lower MAE (Holm p < 0.05)"),
+                      Line2D([], [], color="#d1495b", marker="o", ms=3, lw=1.2, label="A higher MAE (Holm p < 0.05)"),
+                      Line2D([], [], color="#888888", marker="o", ms=3, lw=1.2, label="not distinguishable"),
+                      Patch(color="#eef3f8", label="±0.02 eV equivalence margin")],
+             loc="lower right", fontsize=5.8, frameon=True, framealpha=0.95, edgecolor="#cccccc")
+    b.set_xlabel("Paired ΔMAE, A − B (eV), mean and 95% CI"); b.set_title("Pre-specified paired comparisons (Holm)", fontsize=7)
     b.spines[["top", "right"]].set_visible(False)
     b.text(-0.30, 1.04, "c", transform=b.transAxes, fontsize=9, fontweight="bold")
     # c: trade-off: shell completeness vs MAE
@@ -170,12 +176,17 @@ def fig2(D, F, C):
         xr = S.loc[v, "shell_complete_r3.0_pct"]
         c.annotate(disp(v), (xr, D[D.view == v].MAE.mean()), xytext=(-5, 5) if xr > 80 else (5, 2), ha="right" if xr > 80 else "left", textcoords="offset points", fontsize=5.8)
     c.axhline(D[D.view == "Original-4.5"].MAE.mean(), color="#555555", lw=0.6, ls="--")
-    c.text(100, D[D.view == "Original-4.5"].MAE.mean() + 0.002, "full graph", ha="right", fontsize=5.8, color="#555555")
     c.set_xlabel("Atoms with complete 3.0 Å shell (%)"); c.set_ylabel("Mean test MAE (eV)")
     c.set_title("Trade-off at τ = 0.5", fontsize=7); c.set_xlim(-8, 112)
     c.spines[["top", "right"]].set_visible(False)
     c.text(-0.2, 1.06, "b", transform=c.transAxes, fontsize=9, fontweight="bold")
-    c.text(0.98, 0.70, "filled: gated · open: ungated\nmarker size: share of\nprotected bonds kept", transform=c.transAxes, fontsize=5.8, color="#555555", ha="right", va="top")
+    from matplotlib.lines import Line2D as L2
+    c.legend(handles=[L2([], [], ls="", marker="o", ms=5, mfc="#777777", mec="#777777", label="gated"),
+                      L2([], [], ls="", marker="o", ms=5, mfc="white", mec="#777777", label="ungated"),
+                      L2([], [], ls="", marker="o", ms=7.5, mfc="#bbbbbb", mec="#bbbbbb", label="100% protected kept"),
+                      L2([], [], ls="", marker="o", ms=4.5, mfc="#bbbbbb", mec="#bbbbbb", label="~50% protected kept"),
+                      L2([], [], color="#555555", lw=0.6, ls="--", label="full graph (mean MAE)")],
+             loc="upper right", fontsize=5.8, frameon=True, framealpha=0.95, edgecolor="#cccccc")
     out = R / "figures/fig2_results"
     fig.savefig(f"{out}.pdf", bbox_inches="tight"); fig.savefig(f"{out}.png", dpi=300, bbox_inches="tight")
     shutil.copy(f"{out}.pdf", R / "manuscript/figures/fig2_results.pdf")

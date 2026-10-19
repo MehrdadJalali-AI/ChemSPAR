@@ -21,11 +21,19 @@ def main():
         rows.append(f"{r.display_name} & {g} & {r.retained_instances_pct:.1f} & {r.protected_retention_tol025_pct:.3f} & {r.protected_retention_tol040_pct:.3f} & "
                     f"{r.protected_retention_tol055_pct:.3f} & {r['shell_complete_r2.5_pct']:.1f} & {r['shell_complete_r3.0_pct']:.1f} & "
                     f"{r['shell_complete_r3.5_pct']:.1f} & {r.connected_structures_pct:.1f} \\\\")
+    VO = R / "results/revision/structural_voronoi.csv"
+    if VO.exists():
+        vo = pd.read_csv(VO).iloc[0]
+        rows.insert(5, f"Voronoi &  & {vo.pct_of_full_incl_beyond_4p5:.1f} & {vo.protected_retention_tol025_pct:.3f} & {vo.protected_retention_tol040_pct:.3f} & "
+                       f"{vo.protected_retention_tol055_pct:.3f} & {vo['shell_complete_r2.5_pct']:.1f} & {vo['shell_complete_r3.0_pct']:.1f} & "
+                       f"{vo['shell_complete_r3.5_pct']:.1f} & {vo.connected_structures_pct_incl_beyond_4p5:.1f} \\\\")
     w("si_structural_all.tex", rows)
     rows = []
     for v, r in S.iterrows():
         rows.append(f"{r.display_name} & " + " & ".join(f"{r[f'loss_frac_{k}']:.2f}" for k in ("H", "C", "N", "O", "metal", "other")) +
                     (f" & {r.removed_H_involving_pct:.1f}" if not pd.isna(r.removed_H_involving_pct) else " & --") + " \\\\")
+    if VO.exists():
+        rows.insert(5, "Voronoi & " + " & ".join(f"{vo[f'loss_frac_{k}']:.2f}" for k in ("H", "C", "N", "O", "metal", "other")) + f" & {vo.removed_H_involving_pct:.1f} \\\\")
     w("si_role_loss.tex", rows)
     H = pd.read_csv(R / "results/phase2i/p2i_hbprotect_vs_chemspar.csv")
     w("si_hbprotect.tex", [f"{r.tau} & {r.structures_differing:,} & {100 * r.frac_differing_among_hb_structures:.1f} & {r.mean_jaccard_removed:.4f} & "

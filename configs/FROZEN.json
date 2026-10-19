@@ -260,5 +260,12 @@
         "proof2_independent_recompute_checked": 100
       }
     }
+  },
+  "geogate_v1": {
+    "file": "configs/geogate_v1.yaml",
+    "sha256": "e550a9618d6226b43b393a074654ab64fdd1125082198a147bc24c6c29c85a37",
+    "frozen_at": "2026-10-19 15:04:56 CEST",
+    "fits_started": false,
+    "note": "Added before any geometric-gate fit. Existing files_sha256 and tensor_proof entries are unchanged."
   }
 }

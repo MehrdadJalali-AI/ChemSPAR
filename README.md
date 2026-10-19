@@ -53,6 +53,7 @@ python scripts/p4_analyse_final.py cgcnn             # pre-specified paired anal
 python scripts/p4_cost_benchmark.py all              # cost benchmark (run on an otherwise idle machine)
 python scripts/check_final_numbers.py                # independent recomputation of the paper's tables
 ```
+Revision analyses (no new training): `scripts/p5_structural_revision.py` (sweep and weight sensitivity), `scripts/p5_voronoi.py`, `scripts/p5_posthoc.py`, `scripts/p6_structural_extras.py`, and `scripts/ms_make_revision.py`. The size-matched geometric-gate comparison is `scripts/p7_geogate_structural.py` with `configs/geogate_v1.yaml`.
 Figures: `scripts/fig1_export.py`, then open `figures/fig1_build/render.html` through `scripts/fig1_render_server.py`
 (download 3Dmol.js into `figures/fig1_build/`, e.g.
 `curl -o figures/fig1_build/3Dmol-min.js https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js`),
@@ -65,7 +66,7 @@ python -m pytest -q tests
 Tests that compare with the earlier, pre-ChemSPAR code are skipped (that code is not part of this repository).
 
 ## Large outputs
-Graph views, audit logs and per-fit predictions will be deposited on Zenodo; the DOI will be added here.
+Graph views, complete audit logs and per-fit predictions are at https://doi.org/10.5281/zenodo.23475531 (CC-BY-4.0).
 
 ## License
 MIT (see `LICENSE`).

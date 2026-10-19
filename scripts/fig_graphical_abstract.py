@@ -30,14 +30,18 @@ fig.add_artist(FancyArrowPatch((0.395, 0.5), (0.415, 0.5), transform=fig.transFi
 b = fig.add_axes([0.415, 0.08, 0.24, 0.80]); c.show(b, c.crop(B / "ax2_c_Distance.png"))
 b.set_title("Half the contacts removed\n(distance ordering + gate; red = removed)", fontsize=11.5)
 h = fig.add_axes([0.80, 0.2, 0.19, 0.62])
-rows = [("Full graph", "Original-4.5", "#555555", True), ("Distance + gate", "Distance-Chem@0.5", "#2a9d8f", True),
-        ("Random + gate", "Random-Chem@0.5", "#e3b23c", True), ("Random, no gate", "Random@0.5", "#e3b23c", False),
-        ("BHS + gate", "BHS-edge-min@0.5", "#d1495b", True), ("BHS, no gate", "BHS-edge-min-noGate@0.5", "#d1495b", False)]
-for k, (lab, v, col, filled) in enumerate(rows):
-    h.barh(k, mae[v], color=col if filled else "white", edgecolor=col, lw=1.5, height=0.7)
+rows = [("Full graph", "Original-4.5", "#555555", True, ""), ("Cutoff 3.5 Å", "Cutoff-3.5", "#999999", True, ""),
+        ("Distance + gate", "Distance-Chem@0.5", "#2a9d8f", True, "//"),
+        ("Random + gate", "Random-Chem@0.5", "#e3b23c", True, ""), ("Random, no gate", "Random@0.5", "#e3b23c", False, ""),
+        ("BHS + gate", "BHS-edge-min@0.5", "#d1495b", True, ""), ("BHS, no gate", "BHS-edge-min-noGate@0.5", "#d1495b", False, "")]
+for k, (lab, v, col, filled, hatch) in enumerate(rows):
+    h.barh(k, mae[v], color=col if filled else "white", edgecolor=col if not hatch else "white", lw=1.5, height=0.7, hatch=hatch)
     h.text(mae[v] + 0.003, k, f"{mae[v]:.3f}", va="center", fontsize=9)
+for y in (1.5, 2.5):
+    h.axhline(y, color="#bbbbbb", lw=0.6)
+h.text(0.5, -0.17, "top: references · hatched: gate barely acts on distance ordering", transform=h.transAxes, ha="center", va="top", fontsize=7.5, color="#555555")
 h.set_yticks(range(len(rows)), [r[0] for r in rows], fontsize=10); h.invert_yaxis()
 h.set_xlim(0.35, 0.51); h.set_xlabel("Bandgap test MAE (eV)", fontsize=10)
-h.set_title("The gate improves accuracy", fontsize=12)
+h.set_title("The gate rescues bond-blind orderings (τ = 0.5)", fontsize=11)
 h.spines[["top", "right"]].set_visible(False)
 fig.savefig(R / "figures/graphical_abstract.png", dpi=150, bbox_inches="tight"); fig.savefig(R / "figures/graphical_abstract.pdf", bbox_inches="tight")

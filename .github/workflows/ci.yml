@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main, package]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: mypy
+
+  test-current:
+    # current releases of all dependencies; golden-order drift is reported as xfail, equivalence stays strict
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - name: PyG extra (3.12 only)
+        if: matrix.python-version == '3.12'
+        run: pip install -e ".[pyg]"
+      - run: pytest -q -rxs
+
+  test-paper-stack:
+    # the paper's exact library versions; everything, including the removal order, must match the fixtures
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    env:
+      CHEMSPAR_STRICT_GOLDEN: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -r paper/requirements.txt
+      - run: pip install -e . --no-deps
+      - run: pytest -q -rxs
+      - name: Paper's own test suite
+        if: matrix.python-version == '3.9'
+        working-directory: paper
+        run: pytest -q -rs tests

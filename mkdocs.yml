@@ -1,0 +1,22 @@
+site_name: ChemSPAR
+site_description: Auditable, chemistry-constrained sparsification of periodic graphs of metal-organic frameworks
+repo_url: https://github.com/MehrdadJalali-AI/ChemSPAR
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Concepts: concepts.md
+  - Quick start (notebook): quickstart.ipynb
+  - Reproducing the paper: reproducing.md
+  - API reference: api.md
+plugins:
+  - search
+  - mkdocs-jupyter:
+      execute: false
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+            show_source: false
+            members_order: source

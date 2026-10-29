@@ -1,0 +1,296 @@
+{
+ "bond_class_counts": {
+  "covalent_radius": 11,
+  "metal_contact": 12,
+  "metal_ligand": 6,
+  "other_contact": 116
+ },
+ "generated_with": {
+  "code": "paper/src/chemspar_v2 (paper-v1)",
+  "networkx": "3.2.1",
+  "numpy": "1.26.4",
+  "paper_src_sha256": "fa890ab4d7f0e0e66cf0bf419624ac6edccedb00cca70de97004a55a47fbd3b0",
+  "pymatgen": "2024.2.20",
+  "python": "3.9.25",
+  "scipy": "1.13.1"
+ },
+ "n_atoms": 16,
+ "n_instances": 145,
+ "source": "tests/data/synthetic/syn-cu-formate-water.cif",
+ "structure_id": "syn-cu-formate-water",
+ "views": {
+  "BHS-edge-min-noGate@0.2": {
+   "attempts": 31,
+   "audit_discrete_sha256": "96b98b2697151fd16d5edb927d0316944e7c2f364ce479c4bd088081e70b0df9",
+   "audit_float_sha256": "4e26924923b1784351b1327606a57993115d034b570a048c59bc3b0b3d2bfab6",
+   "rejections": {
+    "degree": 2
+   },
+   "removed": 29,
+   "removed_sha256": "11243896cdb40f76b0ecbb6dbf3f44beacfaa525b0da190b8af842cadae30930",
+   "target": 29
+  },
+  "BHS-edge-min-noGate@0.5": {
+   "attempts": 77,
+   "audit_discrete_sha256": "58a8b24ab48cbfbd5e2270896c7b4f96caa56a0f0be6ff161f0e0c11b790c01b",
+   "audit_float_sha256": "f2dfde031b7bc36b58edf2f8c5113504b795db91f3710778c1a306e65864475e",
+   "rejections": {
+    "connectivity": 1,
+    "degree": 4
+   },
+   "removed": 72,
+   "removed_sha256": "3fcc05a15d76b2b63e43a3f8fc358353a4dfa2022e03c2ee1dbb65bea09da04c",
+   "target": 72
+  },
+  "BHS-edge-min@0.2": {
+   "attempts": 35,
+   "audit_discrete_sha256": "fd0f8f61c2383530de920bf79ab4fd048249de4a196ab77f49e220ccad836795",
+   "audit_float_sha256": "3b72a638f0d13d67fd77da44b41a05f53ebb0a3a8f635a2bbdba23809977cb7d",
+   "rejections": {
+    "protected:covalent_radius:both": 4,
+    "protected:metal_ligand:both": 2
+   },
+   "removed": 29,
+   "removed_sha256": "5182fe48661d26dbbb1af332dfa5402f410d652bdbc2216e179f89777197df13",
+   "target": 29
+  },
+  "BHS-edge-min@0.5": {
+   "attempts": 86,
+   "audit_discrete_sha256": "47193dfeb0e5fbce468fcbe85960f12a2eb722d3a355de7123ccd14accfdbebb",
+   "audit_float_sha256": "4f6a6fde3aa423f8dab421da8cab8fe1786dfc464db08c9f5cdda591ca986e66",
+   "rejections": {
+    "protected:covalent_radius:both": 8,
+    "protected:metal_ligand:both": 6
+   },
+   "removed": 72,
+   "removed_sha256": "29a090d2f02aad8ead4f75b1fdf5e42b603f2fe08f636014ca9c98b244b18b01",
+   "target": 72
+  },
+  "BHS-edge-prod@0.2": {
+   "attempts": 37,
+   "audit_discrete_sha256": "957c4c04527f86b7b4af023412f2b9e8a1682c71a24701686cfef0c5c7fd9d79",
+   "audit_float_sha256": "003c7ad2bfc31cf1d3077d724d47cb80d10e00f4902383e68ebaa539e113083e",
+   "rejections": {
+    "protected:covalent_radius:both": 5,
+    "protected:metal_ligand:both": 3
+   },
+   "removed": 29,
+   "removed_sha256": "085876eb851d6d9c0d12a48e59dd5cdc68ce49bced9ba1b4e9ba6adfd953629f",
+   "target": 29
+  },
+  "BHS-edge-prod@0.5": {
+   "attempts": 86,
+   "audit_discrete_sha256": "7c136db0e655d88026b2276be5f2cd0b00e03f1cef963d6ed9aedd5d41dccb79",
+   "audit_float_sha256": "f52641163796f6436e1643e63a9ee7f86739dcdd15a69262270b4211968f74db",
+   "rejections": {
+    "protected:covalent_radius:both": 8,
+    "protected:metal_ligand:both": 6
+   },
+   "removed": 72,
+   "removed_sha256": "02abbb879fa8f8e8997ca1435646c2d00b2a92c2fcd00230d9a1ef553b5f9171",
+   "target": 72
+  },
+  "ChemSPAR-v2-HBProtect@0.2": {
+   "attempts": 29,
+   "audit_discrete_sha256": "27ea09e5e6d08542da026dab37cba1d12a6915c617562464d53562cc7cd7c890",
+   "audit_float_sha256": "7bc0547289b315be915073555af95e74c1ba5e8350fa30100a6bd8a14a880031",
+   "rejections": {},
+   "removed": 29,
+   "removed_sha256": "74b24e368d2044c625ddbc2674aa6bff624382d1489ce6c7c99283e7fc05da88",
+   "target": 29
+  },
+  "ChemSPAR-v2-HBProtect@0.5": {
+   "attempts": 75,
+   "audit_discrete_sha256": "6f066955ad31fe59e0d7a9e4d8ac43cba03206cdc4445358f97c249166891bc0",
+   "audit_float_sha256": "7c88228ce41afe238be236953c8d5a6d28d0c989b62b6de1be6de6182ec9b23c",
+   "rejections": {
+    "connectivity": 1,
+    "protected:covalent_radius:both": 2
+   },
+   "removed": 72,
+   "removed_sha256": "ea863313fcdb82e75a8ed05e7d7d350696c8681c3f0ebe99d2d3ac856559fea8",
+   "target": 72
+  },
+  "ChemSPAR-v2-chemmass@0.2": {
+   "attempts": 29,
+   "audit_discrete_sha256": "9d8123c16cddc7ec6f7c3d293987cd2bef1ef3293034182a14900b1509771ed0",
+   "audit_float_sha256": "085581f49a25294cea92397f7bcfaea4fb9ad7570b9383645b39662950361eea",
+   "rejections": {},
+   "removed": 29,
+   "removed_sha256": "a6a6afb20d176525d90fc8902fafbfe50ce68b92b39410769613aa9d882b105a",
+   "target": 29
+  },
+  "ChemSPAR-v2-chemmass@0.5": {
+   "attempts": 77,
+   "audit_discrete_sha256": "0249e2d2e28add6adefd68fa24c39d327b515a5fba2c4d4712b162022da2eb30",
+   "audit_float_sha256": "d3f533a2e9d13bd166d40abfb6c2376f7bb66f7e18e7c5d492c7c3cdf8684cde",
+   "rejections": {
+    "connectivity": 1,
+    "protected:covalent_radius:both": 4
+   },
+   "removed": 72,
+   "removed_sha256": "73c780006b41463c207d60bb0b518a3043b906c003de1beb8cd7a62fc8007769",
+   "target": 72
+  },
+  "ChemSPAR-v2-massfree@0.2": {
+   "attempts": 29,
+   "audit_discrete_sha256": "7389cc74af6b8bc561985fdf0221392a1c474f8b089d6ee36048a8de7c1c5438",
+   "audit_float_sha256": "526ea0cba9f13f1560610cabcd003846f47a14d4e97910c703d5735b89db16d6",
+   "rejections": {},
+   "removed": 29,
+   "removed_sha256": "90e2e83c3d3a260e49d1905649d118a28c9b7d0c0b75bbf3f2b2be8e938f7398",
+   "target": 29
+  },
+  "ChemSPAR-v2-massfree@0.5": {
+   "attempts": 72,
+   "audit_discrete_sha256": "bcebae8114b63c4b6f83207d2f285328a9f246607891f6d75dfe2d85bf49133b",
+   "audit_float_sha256": "f3a36585d8ec729b8489908da5d675b7ddcb8b4cc17667ece526b9d661d5d9ba",
+   "rejections": {},
+   "removed": 72,
+   "removed_sha256": "801f1312db15ddba6b65297e295000e6477fcbd40395ee91836527f127a4ae9e",
+   "target": 72
+  },
+  "ChemSPAR-v2-noGate@0.2": {
+   "attempts": 29,
+   "audit_discrete_sha256": "fcdf8c027258b4a05a3ad3debeababbe2c5317ed3c636343b4c520b8f162f19c",
+   "audit_float_sha256": "7bc0547289b315be915073555af95e74c1ba5e8350fa30100a6bd8a14a880031",
+   "rejections": {},
+   "removed": 29,
+   "removed_sha256": "74b24e368d2044c625ddbc2674aa6bff624382d1489ce6c7c99283e7fc05da88",
+   "target": 29
+  },
+  "ChemSPAR-v2-noGate@0.5": {
+   "attempts": 75,
+   "audit_discrete_sha256": "1bbf99a378fdcedbf1102b612d8a35ab65491d26706bef079744e426867a40de",
+   "audit_float_sha256": "7c88228ce41afe238be236953c8d5a6d28d0c989b62b6de1be6de6182ec9b23c",
+   "rejections": {
+    "connectivity": 2,
+    "degree": 1
+   },
+   "removed": 72,
+   "removed_sha256": "0de7bc019683e5535663a669a0f559eaa4b3fc66fa8f7cca48e81d8548839a58",
+   "target": 72
+  },
+  "ChemSPAR-v2-topomass@0.2": {
+   "attempts": 31,
+   "audit_discrete_sha256": "0e99355a940ea3fb31f285b88022d35891b0b2dcf42f3b785e6d27e98edcc4a0",
+   "audit_float_sha256": "8bb9e11d938e1b6a18be7732ff039d5fbce673c3465f28d97c8b671a07db325f",
+   "rejections": {
+    "protected:covalent_radius:both": 2
+   },
+   "removed": 29,
+   "removed_sha256": "a152a7dab4a5a4c109a297c272f0744366d3f4c706979381cb551109150291bf",
+   "target": 29
+  },
+  "ChemSPAR-v2-topomass@0.5": {
+   "attempts": 74,
+   "audit_discrete_sha256": "bce13ce807302a61d7b7ee2f3c3bae92549ef21bcb0c2c9bcddb8ecf74aaa449",
+   "audit_float_sha256": "8e524a841ed83d8120f54ae967a801df47abad31f8c2d6c6ec3ee8c1627aa685",
+   "rejections": {
+    "protected:covalent_radius:both": 2
+   },
+   "removed": 72,
+   "removed_sha256": "9b7f94b3f99d17fe3865c2ae8073a5196989f957f4a02d2fbcd3c37a035c107c",
+   "target": 72
+  },
+  "ChemSPAR-v2@0.2": {
+   "attempts": 29,
+   "audit_discrete_sha256": "e271ca8bf08c007617c39754033edeb19a21b4af3f47f65d80e0fc1f169f19e7",
+   "audit_float_sha256": "7bc0547289b315be915073555af95e74c1ba5e8350fa30100a6bd8a14a880031",
+   "rejections": {},
+   "removed": 29,
+   "removed_sha256": "74b24e368d2044c625ddbc2674aa6bff624382d1489ce6c7c99283e7fc05da88",
+   "target": 29
+  },
+  "ChemSPAR-v2@0.5": {
+   "attempts": 75,
+   "audit_discrete_sha256": "8a5da015fbc67b777e207d4809f8f0a2099cf8a8a596bdef91f36b7a0687ae9f",
+   "audit_float_sha256": "7c88228ce41afe238be236953c8d5a6d28d0c989b62b6de1be6de6182ec9b23c",
+   "rejections": {
+    "connectivity": 1,
+    "protected:covalent_radius:both": 2
+   },
+   "removed": 72,
+   "removed_sha256": "ea863313fcdb82e75a8ed05e7d7d350696c8681c3f0ebe99d2d3ac856559fea8",
+   "target": 72
+  },
+  "Distance-Chem@0.2": {
+   "attempts": 29,
+   "audit_discrete_sha256": "6eba939a8f2e15df8d191a732bfccb506075d74ad2310eb10685a6d265c4ec10",
+   "audit_float_sha256": "eceb08d9ca96ae6d494b84071af506dc74233d579b57e751ededffbd48f74205",
+   "rejections": {},
+   "removed": 29,
+   "removed_sha256": "ee36c4da9f9e3de6524199f41917659d2ac2c51ed89b830ea82170b16f099265",
+   "target": 29
+  },
+  "Distance-Chem@0.5": {
+   "attempts": 72,
+   "audit_discrete_sha256": "adf4a3747f73de5a5ebff43831eb790ca5040d13ea1539df614fd0871486c626",
+   "audit_float_sha256": "e2fcb790d7c7b0afdcff7ffe13ce1cb294cf29fbaf0ed0a25e4e79cb567b5e82",
+   "rejections": {},
+   "removed": 72,
+   "removed_sha256": "140559b5f319728ca5fadc5a4375857431cbacf552e81dd25642fa9e215c8ac6",
+   "target": 72
+  },
+  "Distance@0.2": {
+   "attempts": 29,
+   "audit_discrete_sha256": "811482a45c9c4e28cc0db4bb0254e64c935c39dcf8080305f31e5db06d0ca5cd",
+   "audit_float_sha256": "eceb08d9ca96ae6d494b84071af506dc74233d579b57e751ededffbd48f74205",
+   "rejections": {},
+   "removed": 29,
+   "removed_sha256": "ee36c4da9f9e3de6524199f41917659d2ac2c51ed89b830ea82170b16f099265",
+   "target": 29
+  },
+  "Distance@0.5": {
+   "attempts": 72,
+   "audit_discrete_sha256": "4b500856518f92cfd8465f5f506220df9802acb28935d0a7f8853c6eb72d5f6d",
+   "audit_float_sha256": "e2fcb790d7c7b0afdcff7ffe13ce1cb294cf29fbaf0ed0a25e4e79cb567b5e82",
+   "rejections": {},
+   "removed": 72,
+   "removed_sha256": "140559b5f319728ca5fadc5a4375857431cbacf552e81dd25642fa9e215c8ac6",
+   "target": 72
+  },
+  "Random-Chem@0.2": {
+   "attempts": 35,
+   "audit_discrete_sha256": "0e19e942a9039f0b7205075c660beaa93edf42e217139062d0ab81fbfb1b26e4",
+   "audit_float_sha256": "a557e560a3cc1d4c5fb579cdb7c07137d0744c443deb0408ad93edeed1d76464",
+   "rejections": {
+    "protected:covalent_radius:both": 5,
+    "protected:metal_ligand:both": 1
+   },
+   "removed": 29,
+   "removed_sha256": "7b7602e43db7139d358bd83c90f6153174016f675475c7dd00f0d0bea5cb544f",
+   "target": 29
+  },
+  "Random-Chem@0.5": {
+   "attempts": 81,
+   "audit_discrete_sha256": "0b45eac0e6d94767dd932b7be36b58c6c25121f1d866c377c4e9cfb85b7bbdda",
+   "audit_float_sha256": "798369553adf76666eba798b63933c0ff9f59f6a081888415b04cdb88b351b47",
+   "rejections": {
+    "protected:covalent_radius:both": 7,
+    "protected:metal_ligand:both": 2
+   },
+   "removed": 72,
+   "removed_sha256": "c8352c85b53c43223e1da8264c88ce67c10de2cc35f1d6e16b833c9a91711c3a",
+   "target": 72
+  },
+  "Random@0.2": {
+   "attempts": 29,
+   "audit_discrete_sha256": "e68d5d06b064c5bcb5fad6a3ba933a59f188ce43345603e466a1648eb706b0d9",
+   "audit_float_sha256": "7c0f2a03d513e14111800f5576994aa14c20bbd2d4be19560fab6569fb31977e",
+   "rejections": {},
+   "removed": 29,
+   "removed_sha256": "4968e4e29d0f5ee9cccc2c3747bc069a8168e983ad9e867a5f9a3055503223fc",
+   "target": 29
+  },
+  "Random@0.5": {
+   "attempts": 72,
+   "audit_discrete_sha256": "800d18ac0c3521fb73217fb3a3046e7bfd11403577057d73e17623aacce2f74a",
+   "audit_float_sha256": "4d5fbed8f27a12f176d0a9255f8fafab81bff69edbb60113979744b10e9cd8ec",
+   "rejections": {},
+   "removed": 72,
+   "removed_sha256": "e19c6727f82df7012e306e73a76e6697316ecbbce6382be3fa8420617fee7139",
+   "target": 72
+  }
+ }
+}

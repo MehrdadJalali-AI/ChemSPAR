@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the article in preferred-citation."
+title: "ChemSPAR: auditable, chemistry-constrained sparsification of periodic graphs of metal-organic frameworks"
+type: software
+version: 1.0.0
+license: MIT
+repository-code: "https://github.com/MehrdadJalali-AI/ChemSPAR"
+authors:
+  - family-names: Jalali
+    given-names: Mehrdad
+    orcid: "https://orcid.org/[ORCID JALALI]"
+  - family-names: Vu
+    given-names: "[GIVEN NAME VU]"
+    orcid: "https://orcid.org/[ORCID VU]"
+  - family-names: Chandna
+    given-names: Swati
+    orcid: "https://orcid.org/[ORCID CHANDNA]"
+  - family-names: Nadimi-Shahraki
+    given-names: "[GIVEN NAME NADIMI-SHAHRAKI]"
+    orcid: "https://orcid.org/[ORCID NADIMI-SHAHRAKI]"
+keywords:
+  - metal-organic frameworks
+  - graph sparsification
+  - crystal graphs
+  - materials informatics
+preferred-citation:
+  type: article
+  title: "ChemSPAR: an auditable, chemistry-constrained framework for sparsifying periodic graphs of metal-organic frameworks"
+  authors:
+    - family-names: Jalali
+      given-names: Mehrdad
+    - family-names: Vu
+      given-names: "[GIVEN NAME VU]"
+    - family-names: Chandna
+      given-names: Swati
+    - family-names: Nadimi-Shahraki
+      given-names: "[GIVEN NAME NADIMI-SHAHRAKI]"
+  journal: "Computational Materials Science"
+  year: "[YEAR]"
+  doi: "[ARTICLE DOI]"
+references:
+  - type: dataset
+    title: "[ZENODO RECORD TITLE]"
+    doi: "10.5281/zenodo.23475531"

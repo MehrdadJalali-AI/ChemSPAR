@@ -13,7 +13,7 @@ def test_version():
 
 
 def test_bundled_config_is_frozen():
-    from conftest import ROOT
+    from helpers import ROOT
 
     from chemspar._config import CHEMISTRY_FILE, FROZEN_SHA256, config_sha256
     for name, h in FROZEN_SHA256.items():
@@ -25,7 +25,7 @@ def test_bundled_config_is_frozen():
 
 
 def test_build_graph_from_structure_and_path(small_graph):
-    from conftest import DATA
+    from helpers import DATA
     from pymatgen.core import Structure
     p = DATA / "synthetic" / "syn-cu-formate-water.cif"
     g = build_graph(Structure.from_file(str(p)), structure_id="x")
@@ -111,7 +111,7 @@ def test_pyg_export_roundtrip(small_graph):
 
 # ---------------------------------------------------------------- CLI
 def test_cli_prune_smoke(tmp_path, capsys):
-    from conftest import DATA
+    from helpers import DATA
     cif = DATA / "synthetic" / "syn-zn-formate.cif"
     out, log = tmp_path / "view.json", tmp_path / "log.parquet"
     assert main(["prune", str(cif), "--ordering", "distance", "--tau", "0.5", "--out", str(out),

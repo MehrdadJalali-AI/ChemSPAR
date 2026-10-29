@@ -1,4 +1,8 @@
-# ChemSPAR
+# ChemSPAR – paper reproduction
+
+> This folder holds the code, configurations, cohort and scripts used for the article, unchanged from the git tag
+> `paper-v1` (only moved into `paper/`). Run every command below from inside this folder. For the reusable
+> library, see the [main README](../README.md) and `pip install chemspar`.
 
 **An auditable, chemistry-constrained framework for sparsifying periodic graphs of metal–organic frameworks.**
 

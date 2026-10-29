@@ -44,7 +44,7 @@ dependencies = [
 [project.optional-dependencies]
 pyg = ["torch>=2.4.0", "torch_geometric>=2.6.1"]
 dev = ["pytest>=8", "ruff", "mypy", "types-PyYAML", "build", "twine"]
-docs = ["mkdocs", "mkdocs-material", "mkdocstrings[python]"]
+docs = ["mkdocs", "mkdocs-material", "mkdocstrings[python]", "mkdocs-jupyter"]
 
 [project.scripts]
 chemspar = "chemspar.cli:main"

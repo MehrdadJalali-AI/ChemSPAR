@@ -1,29 +1,13 @@
 import sys
 import warnings
-from functools import cache
 from pathlib import Path
 
 import pytest
 
-TESTS = Path(__file__).resolve().parent
-ROOT = TESTS.parent
-DATA = TESTS / "data"
-sys.path.insert(0, str(TESTS))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 warnings.filterwarnings("ignore")
 
-SYNTHETIC = sorted((DATA / "synthetic").glob("*.cif"))
-QMOF = sorted((DATA / "qmof").glob("*.cif"))
-ALL_CIFS = SYNTHETIC + QMOF
-
-
-def cif_id(p: Path) -> str:
-    return p.stem
-
-
-@cache
-def graph_for(path: str):
-    from chemspar import build_graph
-    return build_graph(path)
+from helpers import DATA, SYNTHETIC, cif_id, graph_for  # noqa: E402
 
 
 @pytest.fixture(params=SYNTHETIC, ids=cif_id)

@@ -1,0 +1,64 @@
+name: Release to PyPI
+
+# Runs only when a version tag (v1.0.0, ...) is pushed. Uses PyPI Trusted Publishing (no API token):
+# configure the trusted publisher on pypi.org first (see RELEASE.md).
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check that the tag matches the package version
+        run: |
+          v=$(python -c "import re;print(re.search(r'__version__ = \"(.+?)\"', open('chemspar/__init__.py').read())[1])")
+          test "v$v" = "${GITHUB_REF_NAME}" || { echo "tag ${GITHUB_REF_NAME} != version $v"; exit 1; }
+      - run: pip install build twine
+      - run: python -m build
+      - run: twine check --strict dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  test-wheel:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - run: pip install dist/*.whl pytest
+      - name: Test the installed wheel (not the source tree)
+        run: |
+          mkdir /tmp/t && cp -r tests /tmp/t/ && cp -r paper /tmp/t/ && cd /tmp/t
+          python -c "import chemspar, sys; assert 'site-packages' in chemspar.__file__, chemspar.__file__"
+          pytest -q tests
+
+  publish:
+    needs: test-wheel
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/chemspar
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

@@ -8,7 +8,7 @@ import inspect
 import textwrap
 
 import pytest
-from conftest import ROOT
+from helpers import ROOT
 
 PAPER = ROOT / "paper" / "src" / "chemspar_v2"
 pytestmark = pytest.mark.skipif(not PAPER.exists(), reason="paper code not present")

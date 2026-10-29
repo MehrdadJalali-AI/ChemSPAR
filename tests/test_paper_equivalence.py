@@ -6,8 +6,8 @@ removed instances in identical order, identical rejection counts and identical a
 import sys
 
 import pytest
-from conftest import ALL_CIFS, ROOT, cif_id, graph_for
 from golden_lib import POLICY_KEYS, TAUS
+from helpers import ALL_CIFS, ROOT, cif_id, graph_for
 
 PAPER_SRC = ROOT / "paper" / "src"
 pytestmark = pytest.mark.skipif(not (PAPER_SRC / "chemspar_v2").exists(), reason="paper code not present")

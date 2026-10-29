@@ -1,29 +1,36 @@
 import sys
 import warnings
+from functools import cache
 from pathlib import Path
 
 import pytest
 
-RESUB = Path(__file__).resolve().parents[1]
-REPO = RESUB.parent
-sys.path.insert(0, str(RESUB / "src"))
-from chemspar_v2.paths import CIF_DIR, QMOF_DIR  # noqa: E402
-sys.path.insert(0, str(REPO / "src"))
-CIF_DIR = CIF_DIR
+TESTS = Path(__file__).resolve().parent
+ROOT = TESTS.parent
+DATA = TESTS / "data"
+sys.path.insert(0, str(TESTS))
 warnings.filterwarnings("ignore")
 
-
-@pytest.fixture(scope="session")
-def cif_dir():
-    if not CIF_DIR.exists():
-        pytest.skip("full QMOF CIF directory not available")
-    return CIF_DIR
+SYNTHETIC = sorted((DATA / "synthetic").glob("*.cif"))
+QMOF = sorted((DATA / "qmof").glob("*.cif"))
+ALL_CIFS = SYNTHETIC + QMOF
 
 
-@pytest.fixture(scope="session")
-def load_structure(cif_dir):
-    from pymatgen.core import Structure
+def cif_id(p: Path) -> str:
+    return p.stem
 
-    def _load(qmof_id):
-        return Structure.from_file(cif_dir / f"{qmof_id}.cif")
-    return _load
+
+@cache
+def graph_for(path: str):
+    from chemspar import build_graph
+    return build_graph(path)
+
+
+@pytest.fixture(params=SYNTHETIC, ids=cif_id)
+def synthetic_graph(request):
+    return graph_for(str(request.param))
+
+
+@pytest.fixture
+def small_graph():
+    return graph_for(str(DATA / "synthetic" / "syn-cu-formate-water.cif"))

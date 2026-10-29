@@ -28,7 +28,7 @@ pip install chemspar              # core: graph, taxonomy, orderings, gate, audi
 pip install "chemspar[pyg]"       # adds export to PyTorch Geometric (installs torch and torch_geometric)
 ```
 
-Python 3.9–3.12 are tested. The latest development version can be installed from GitHub:
+Python 3.9–3.13 are tested. The latest development version can be installed from GitHub:
 
 ```bash
 pip install "git+https://github.com/MehrdadJalali-AI/ChemSPAR"

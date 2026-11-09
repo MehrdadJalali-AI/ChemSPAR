@@ -2,10 +2,20 @@
 
 **An auditable, chemistry-constrained framework for sparsifying periodic graphs of metal–organic frameworks.**
 
+[![Paper](https://img.shields.io/badge/paper-Comput.%20Mater.%20Sci.%202027-1f6feb)](https://doi.org/10.1016/j.commatsci.2026.115225)
+[![Data](https://img.shields.io/badge/data-Zenodo-0a7bbc)](https://doi.org/10.5281/zenodo.23475531)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 ChemSPAR prunes the periodic contact graph of a crystal (every atom pair within 4.5 Å, one edge per lattice image) under
 an explicit chemistry taxonomy and protection gate. Any edge-ordering policy can be plugged in, and every removal
-attempt is written to an audit log. Code for the paper by M. Jalali, B. Vu, S. Chandna and M. H. Nadimi-Shahraki
-(manuscript under review; citation to follow).
+attempt is written to an audit log.
+
+<p align="center">
+  <img src="ChemSPAR_anatomy.gif" alt="Animation of one ChemSPAR run: the cutoff graph around a Cd site, classification of protected bonds, ranked removal attempts with gate refusals and a live audit log, and the final sparsified graph" width="900">
+</p>
+
+<p align="center"><em>One real ChemSPAR run on the Cd environment of QMOF structure qmof-0338cb2 (random ordering under the gate,
+τ = 0.5): 141 contacts → 83 kept, all 20 protected bonds intact, 12 refusals logged with their reasons.</em></p>
 
 ## What it does
 1. **Contact instances.** Each periodic contact `(i, j, image)` is a separate edge, and the model input is built
@@ -54,6 +64,7 @@ python scripts/p4_cost_benchmark.py all              # cost benchmark (run on an
 python scripts/check_final_numbers.py                # independent recomputation of the paper's tables
 ```
 Revision analyses (no new training): `scripts/p5_structural_revision.py` (sweep and weight sensitivity), `scripts/p5_voronoi.py`, `scripts/p5_posthoc.py`, `scripts/p6_structural_extras.py`, and `scripts/ms_make_revision.py`. The size-matched geometric-gate comparison is `scripts/p7_geogate_structural.py` with `configs/geogate_v1.yaml`.
+
 Figures: `scripts/fig1_export.py`, then open `figures/fig1_build/render.html` through `scripts/fig1_render_server.py`
 (download 3Dmol.js into `figures/fig1_build/`, e.g.
 `curl -o figures/fig1_build/3Dmol-min.js https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js`),
@@ -67,6 +78,25 @@ Tests that compare with the earlier, pre-ChemSPAR code are skipped (that code is
 
 ## Large outputs
 Graph views, complete audit logs and per-fit predictions are at https://doi.org/10.5281/zenodo.23475531 (CC-BY-4.0).
+
+## Citation
+If you use ChemSPAR, please cite:
+
+> M. Jalali, B. Vu, S. Chandna, M. H. Nadimi-Shahraki. ChemSPAR: An auditable, chemistry-constrained framework for
+> sparsifying periodic graphs of metal–organic frameworks. *Computational Materials Science* **277** (2027) 115225.
+> https://doi.org/10.1016/j.commatsci.2026.115225
+
+```bibtex
+@article{jalali2027chemspar,
+  title   = {ChemSPAR: An auditable, chemistry-constrained framework for sparsifying periodic graphs of metal--organic frameworks},
+  author  = {Jalali, Mehrdad and Vu, Binh and Chandna, Swati and Nadimi-Shahraki, Mohammad H.},
+  journal = {Computational Materials Science},
+  volume  = {277},
+  pages   = {115225},
+  year    = {2027},
+  doi     = {10.1016/j.commatsci.2026.115225}
+}
+```
 
 ## License
 MIT (see `LICENSE`).
